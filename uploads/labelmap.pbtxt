@@ -1,0 +1,38 @@
+item {
+  id: 1
+  name: 'TUBE'
+}
+
+item {
+  id: 2
+  name: 'SLIDER'
+}
+
+item {
+  id: 3
+  name: 'SEV_INF'
+}
+
+item {
+  id: 4
+  name: 'EISSTERN'
+}
+
+item {
+  id: 5
+  name: 'ACC_AKTIV'
+}
+
+item {
+  id: 6
+  name: 'ACC_WAITING'
+}
+
+item {
+  id: 7
+  name: 'ACCELERATOR'
+}
+item {
+  id: 8
+  name: 'CONSTRUCTION'
+}

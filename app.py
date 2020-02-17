@@ -14,6 +14,7 @@ from marshmallow import ValidationError
 from flask_cors import CORS
 import cv2
 
+
 sys.path.append("..")
 from .utils import label_map_util
 from .utils import visualization_utils as vis_util
@@ -129,7 +130,7 @@ def upload():
                     object_dict = {}
                     if scores[0, index] > 0.5:
                         object_dict[(category_index.get(value)).get('name')] =  scores[0, index]*100
-                        objects.append(object_dict)    
+                        objects.append(object_dict)
 
                 message="this not what you learned me because  i can n see some problems "
                 problem=[]
@@ -143,7 +144,7 @@ def upload():
 
 
                 im = Image.fromarray(image_np)
-                im.save('../frontend/public/'+filename)
+                 #im.save('http://localhost:3000/public/'+filename)
                 im.save('uploads/'+filename)
                 values=[]
                 for index in categories:
@@ -169,7 +170,10 @@ def upload():
                                     n = "   %s not valid with %s  "%(v,value)
                                     notsure.append(n)
 
-            filename1=os.path.splitext(filename)[0]
+            filename1=('uploads/'+filename)
+
+
+
             ok="ok"
             if len(problem) == 0  and len(notsure) == 0:
                 valid.append(ok)
@@ -187,6 +191,12 @@ def upload():
             }
 
             return jsonify(result)
+
+
+@app.route('/show')
+def send_file(filename):
+    return url_for(app.config['UPLOAD_FOLDER'],
+                               filename)
 
 
 
