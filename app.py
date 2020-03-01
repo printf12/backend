@@ -18,7 +18,6 @@ import cv2
 sys.path.append("..")
 from .utils import label_map_util
 from .utils import visualization_utils as vis_util
-MODEL_NAME = 'ssd_mobilenet_v1_coco_11_06_2017'
 
 NUM_CLASSES = 50
 
@@ -33,7 +32,7 @@ app = Flask(__name__)
 CORS(app)
 
 app.config['UPLOAD_FOLDER'] = 'uploads/'
-app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
+app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg','PNG','JPG','JPEG','gif','GIF'])
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -122,7 +121,7 @@ def upload():
                     np.squeeze(scores),
                     category_index,
                     use_normalized_coordinates=True,
-                    line_thickness=10,
+                    line_thickness=6,
                     min_score_thresh=0.5)
                 # print score and classes in th console
                 objects = []
@@ -144,7 +143,6 @@ def upload():
 
 
                 im = Image.fromarray(image_np)
-                 #im.save('http://localhost:3000/public/'+filename)
                 im.save('uploads/'+filename)
                 values=[]
                 for index in categories:
@@ -191,14 +189,6 @@ def upload():
             }
 
             return jsonify(result)
-
-
-@app.route('/show')
-def send_file(filename):
-    return url_for(app.config['UPLOAD_FOLDER'],
-                               filename)
-
-
 
 
 if __name__ == '__main__':
