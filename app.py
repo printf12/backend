@@ -55,8 +55,8 @@ def index():
 def upload():
     file = request.files['file']
     graph = request.files['graph']
-    label = request.files['label']
-    labelname=secure_filename(label.filename)
+    label = request.form['label']
+
     filename = secure_filename(file.filename)
     graphname=secure_filename(graph.filename)
 
@@ -66,22 +66,16 @@ def upload():
     if graph and allowed_graph(graph.filename)==False:
      return  "graph not allowed", 400
 
-    if label and allowed_label(label.filename)==False:
-     return  "label not allowed", 400
-
-    if label and allowed_label(label.filename):
-        label.save(os.path.join(app.config['UPLOAD_FOLDER'], labelname))
-
 
     if file and allowed_file(file.filename):
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
 
 
+
     PATH_TO_CKPT =os.path.join('uploads', graphname)
 
-    PATH_TO_LABELS =os.path.join('uploads',labelname)
-
+    PATH_TO_LABELS = os.path.join('data', 'labelmap.pbtxt')
     detection_graph = tf.Graph()
     with detection_graph.as_default():
       od_graph_def = tf.GraphDef()
@@ -131,7 +125,7 @@ def upload():
                         object_dict[(category_index.get(value)).get('name')] =  scores[0, index]*100
                         objects.append(object_dict)
 
-                message="this not what you learned me because  i can n see some problems "
+                message=label
                 problem=[]
                 valid=[]
                 notsure=[]
@@ -147,15 +141,21 @@ def upload():
                 values=[]
                 for index in categories:
                     values.append(index['name'])
-                p=""
-                for elms in values:
-                    if  elms not in name:
-                        p="i can't see any %s "%(elms)
-                        problem.append(p)
+                valid=""
+
+                valid1=""
+                if  label.upper() not in values:
+                        valid1="i can't see any %s "%(label.upper())
+                else:
+                    valid1="i see %s "%(label.upper())
 
                 a=False
                 val=""
                 n=""
+                for elms in objects:
+                    for value in elms.values():
+                        if label in objects:
+                            ok="ok"
                 for elms in objects:
                     for value in elms.values():
                         for v in values:
@@ -172,19 +172,14 @@ def upload():
 
 
 
-            ok="ok"
-            if len(problem) == 0  and len(notsure) == 0:
-                valid.append(ok)
-            else:
-                valid.append("this not what you learned me because i see some problems : ")
+
 
 
 
             result={
             'filename1':filename,
-            'valid':valid,
-            'notsure':notsure,
-            'problem':problem
+            'valid':valid1,
+
 
             }
 
